@@ -51,7 +51,7 @@ export function MissionSection() {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section className="py-[100px]">
+    <section className="py-16 sm:py-20 lg:py-[100px]">
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
@@ -64,10 +64,10 @@ export function MissionSection() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="mb-10 text-center"
           >
-            <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+            <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
               Our Mission
             </p>
-            <h2 className="text-[2rem] font-semibold tracking-tight text-white lg:text-[2.75rem]">
+            <h2 className="text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[2.75rem]">
               Where Science Meets Finance
             </h2>
           </motion.div>
@@ -141,7 +141,7 @@ export function ValuesSection() {
   const isInView = useInView(ref, { once: true, amount: 0.15 });
 
   return (
-    <section className="py-[100px]">
+    <section className="py-16 sm:py-20 lg:py-[100px]">
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
@@ -151,12 +151,12 @@ export function ValuesSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mb-14 max-w-[600px] text-center"
+          className="mx-auto mb-10 max-w-[600px] text-center sm:mb-14"
         >
-          <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+          <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
             Our Principles
           </p>
-          <h2 className="text-[2rem] font-semibold tracking-tight text-white lg:text-[2.75rem]">
+          <h2 className="text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[2.75rem]">
             What Drives Us
           </h2>
         </motion.div>
@@ -174,7 +174,7 @@ export function ValuesSection() {
               <motion.div
                 key={value.title}
                 variants={cardVariants}
-                className="group flex flex-col bg-[#0A0A0A] p-8 transition-colors duration-500 hover:bg-[rgba(0,229,255,0.02)]"
+                className="group flex flex-col bg-[#0A0A0A] p-6 transition-colors duration-500 hover:bg-[rgba(0,229,255,0.02)] sm:p-8"
               >
                 {/* Icon */}
                 <div className="relative mb-5">

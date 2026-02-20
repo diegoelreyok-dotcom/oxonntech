@@ -24,8 +24,8 @@ const FOOTER_LINKS = {
 export function Footer() {
   return (
     <footer className="w-full border-t border-[#1F1F1F] bg-[#0A0A0A]">
-      <div className="mx-auto max-w-[1280px] px-6 py-16 lg:py-20">
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-12">
+      <div className="mx-auto max-w-[1280px] px-6 py-12 sm:py-16 lg:py-20">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-10 lg:grid-cols-5 lg:gap-12">
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <Link href="/" className="inline-block text-lg font-bold tracking-[0.2em] text-white">
               OXONN
@@ -105,7 +105,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-[#1F1F1F]">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-6">
+        <div className="mx-auto flex max-w-[1280px] flex-col items-center gap-3 px-6 py-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-[#6B7280]">&copy; 2026 OXONN Technologies. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="text-xs text-[#6B7280] transition-colors duration-200 hover:text-white">Privacy</Link>

@@ -56,7 +56,7 @@ export function Navbar() {
             : 'bg-transparent'
         )}
       >
-        <nav className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8 lg:px-12" aria-label="Main navigation">
+        <nav className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-12" aria-label="Main navigation">
           <Link href="/" className="text-[22px] font-bold tracking-[-0.05em] text-white transition-opacity duration-200 hover:opacity-80">
             OXONN
           </Link>
@@ -81,7 +81,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-md text-[#9CA3AF] transition-colors hover:text-white lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-md text-[#9CA3AF] transition-colors hover:text-white lg:hidden"
               aria-label="Open navigation menu"
             >
               <Menu className="h-6 w-6" />

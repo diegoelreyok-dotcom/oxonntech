@@ -29,12 +29,12 @@ export function PageHero({
           <Breadcrumb items={breadcrumbs} className="mb-6" />
         )}
 
-        <h1 className="max-w-3xl text-[3rem] font-bold tracking-tight text-white lg:text-[4.5rem] lg:leading-[1.1]">
+        <h1 className="max-w-3xl text-[1.875rem] font-bold tracking-tight text-white sm:text-[3rem] lg:text-[4.5rem] lg:leading-[1.1]">
           {title}
         </h1>
 
         {description && (
-          <p className="mt-4 max-w-xl text-[1.125rem] text-[#9CA3AF]">
+          <p className="mt-4 max-w-xl text-[0.9375rem] text-[#9CA3AF] sm:text-[1.125rem]">
             {description}
           </p>
         )}

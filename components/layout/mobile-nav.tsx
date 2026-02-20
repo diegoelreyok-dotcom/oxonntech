@@ -111,7 +111,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1F1F1F] text-[#9CA3AF] transition-colors hover:border-[#2A2A2A] hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#1F1F1F] text-[#9CA3AF] transition-colors hover:border-[#2A2A2A] hover:text-white"
                 aria-label="Close navigation"
               >
                 <X className="h-5 w-5" />

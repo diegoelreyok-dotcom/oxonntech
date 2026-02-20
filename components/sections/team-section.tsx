@@ -40,7 +40,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-8 text-center transition-all duration-500 hover:border-[rgba(0,229,255,0.15)]"
+      className="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-6 text-center transition-all duration-500 hover:border-[rgba(0,229,255,0.15)] sm:p-8"
     >
       {/* Subtle glow behind photo on hover */}
       <div className="absolute left-1/2 top-16 h-32 w-32 -translate-x-1/2 rounded-full bg-[rgba(0,229,255,0.06)] opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
@@ -110,10 +110,10 @@ export function TeamSection({ members }: TeamSectionProps) {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="mx-auto mb-14 max-w-[600px] text-center"
       >
-        <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+        <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
           Leadership
         </p>
-        <h2 className="text-[2rem] font-semibold tracking-tight text-white lg:text-[2.75rem]">
+        <h2 className="text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[2.75rem]">
           The Team Behind OXONN
         </h2>
       </motion.div>
@@ -123,7 +123,7 @@ export function TeamSection({ members }: TeamSectionProps) {
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
-        className="mx-auto grid max-w-[900px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        className="mx-auto grid max-w-[1100px] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
       >
         {members.map((member) => (
           <TeamMemberCard key={member.id} member={member} />

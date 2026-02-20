@@ -298,20 +298,20 @@ export function SolutionsShowcase() {
   const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   return (
-    <SectionReveal className="border-t border-[#1F1F1F] py-[120px]">
+    <SectionReveal className="border-t border-[#1F1F1F] py-16 sm:py-20 lg:py-[120px]">
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
       >
         {/* Header */}
-        <div className="mx-auto mb-16 max-w-[800px] text-center">
-          <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+        <div className="mx-auto mb-10 max-w-[800px] text-center sm:mb-16">
+          <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
             Solutions
           </p>
-          <h2 className="mb-4 text-[2rem] font-semibold tracking-tight text-white lg:text-[3rem]">
+          <h2 className="mb-4 text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[3rem]">
             Three Pillars of Quantitative Edge
           </h2>
-          <p className="mx-auto max-w-xl text-[1.125rem] leading-relaxed text-[#9CA3AF]">
+          <p className="mx-auto max-w-xl text-[0.9375rem] leading-relaxed text-[#9CA3AF] sm:text-[1.125rem]">
             From alpha generation to risk management and bespoke private
             solutions.
           </p>

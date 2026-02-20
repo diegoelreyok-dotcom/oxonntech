@@ -30,7 +30,7 @@ export function SectionHeader({
       )}
       <h2
         className={cn(
-          'text-[2rem] font-bold tracking-tight text-white',
+          'text-[1.5rem] font-bold tracking-tight text-white sm:text-[2rem]',
           align === 'center' && 'mx-auto max-w-2xl'
         )}
       >
@@ -39,7 +39,7 @@ export function SectionHeader({
       {description && (
         <p
           className={cn(
-            'mt-4 text-[1.125rem] text-[#9CA3AF]',
+            'mt-4 text-[0.9375rem] text-[#9CA3AF] sm:text-[1.125rem]',
             align === 'center' && 'mx-auto max-w-xl'
           )}
         >

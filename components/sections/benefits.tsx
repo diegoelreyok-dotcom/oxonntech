@@ -63,7 +63,7 @@ export function Benefits() {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section className="py-[100px]">
+    <section className="py-16 sm:py-20 lg:py-[100px]">
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
@@ -73,12 +73,12 @@ export function Benefits() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mb-14 max-w-[600px] text-center"
+          className="mx-auto mb-10 max-w-[600px] text-center sm:mb-14"
         >
-          <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+          <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
             Impact
           </p>
-          <h2 className="text-[2rem] font-semibold tracking-tight text-white lg:text-[2.75rem]">
+          <h2 className="text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[2.75rem]">
             Measurable Results from Day One
           </h2>
         </motion.div>

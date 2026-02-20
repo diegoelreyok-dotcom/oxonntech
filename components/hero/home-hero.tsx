@@ -36,7 +36,7 @@ export function HomeHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-5 text-[14px] font-medium uppercase tracking-[4px] text-[#00E5FF]"
+          className="mb-5 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px] sm:tracking-[4px]"
         >
           Quantitative Finance · Institutional Grade
         </motion.p>
@@ -46,7 +46,7 @@ export function HomeHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-[900px] text-[2.75rem] font-bold leading-[1.1] tracking-tight text-white sm:text-[3.5rem] lg:text-[4.5rem]"
+          className="mx-auto max-w-[900px] text-[2.25rem] font-bold leading-[1.1] tracking-tight text-white sm:text-[3.5rem] lg:text-[4.5rem]"
         >
           Systematic Alpha.
           <br />
@@ -60,7 +60,7 @@ export function HomeHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mt-6 max-w-[580px] text-[1.125rem] leading-[1.7] text-[#9CA3AF]"
+          className="mx-auto mt-6 max-w-[580px] text-[0.9375rem] leading-[1.7] text-[#9CA3AF] sm:text-[1.125rem]"
         >
           Quantitative strategies engineered for consistent risk-adjusted
           performance — from signal research to sub-millisecond execution.
@@ -73,10 +73,10 @@ export function HomeHero() {
           transition={{ duration: 0.6, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
           className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
         >
-          <AnimatedBorderButton href="/solutions" className="min-w-[200px]">
+          <AnimatedBorderButton href="/solutions" className="w-full sm:w-auto sm:min-w-[200px]">
             See How It Works
           </AnimatedBorderButton>
-          <AnimatedBorderButton href="/contact" className="min-w-[200px]">
+          <AnimatedBorderButton href="/contact" className="w-full sm:w-auto sm:min-w-[200px]">
             Talk to Our Team
           </AnimatedBorderButton>
         </motion.div>

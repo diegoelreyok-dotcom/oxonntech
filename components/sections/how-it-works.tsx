@@ -59,7 +59,7 @@ export function HowItWorks() {
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
 
   return (
-    <section className="relative overflow-hidden py-[120px]">
+    <section className="relative overflow-hidden py-16 sm:py-20 lg:py-[120px]">
       {/* Subtle background grid pattern */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
@@ -81,15 +81,15 @@ export function HowItWorks() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mb-16 max-w-[800px] text-center lg:mb-20"
+          className="mx-auto mb-10 max-w-[800px] text-center sm:mb-16 lg:mb-20"
         >
-          <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+          <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
             Integration
           </p>
-          <h2 className="mb-4 text-[2rem] font-semibold tracking-tight text-white lg:text-[3rem]">
+          <h2 className="mb-4 text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[3rem]">
             Seamless Integration with Your Infrastructure
           </h2>
-          <p className="mx-auto max-w-xl text-[1.125rem] leading-relaxed text-[#9CA3AF]">
+          <p className="mx-auto max-w-xl text-[0.9375rem] leading-relaxed text-[#9CA3AF] sm:text-[1.125rem]">
             Connect in minutes. No disruption to existing systems.
           </p>
         </motion.div>

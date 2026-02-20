@@ -707,7 +707,7 @@ export function InsightsSection({
   const isInView = useInView(ref, { once: true, amount: 0.15 });
 
   return (
-    <section className={className ?? 'py-[120px]'}>
+    <section className={className ?? 'py-16 sm:py-20 lg:py-[120px]'}>
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
@@ -718,15 +718,15 @@ export function InsightsSection({
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto mb-16 max-w-[800px] text-center"
+            className="mx-auto mb-10 max-w-[800px] text-center sm:mb-16"
           >
-            <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+            <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
               Insights
             </p>
-            <h2 className="mb-4 text-[2rem] font-semibold tracking-tight text-white lg:text-[3rem]">
+            <h2 className="mb-4 text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[3rem]">
               Latest Research & Analysis
             </h2>
-            <p className="mx-auto max-w-xl text-[1.125rem] leading-relaxed text-[#9CA3AF]">
+            <p className="mx-auto max-w-xl text-[0.9375rem] leading-relaxed text-[#9CA3AF] sm:text-[1.125rem]">
               Perspectives from our quantitative research team.
             </p>
           </motion.div>

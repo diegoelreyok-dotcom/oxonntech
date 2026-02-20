@@ -176,17 +176,17 @@ export function DashboardPreview() {
   const isInView = useInView(chartRef, { once: true, amount: 0.2 });
 
   return (
-    <SectionReveal className="py-[120px]">
+    <SectionReveal className="py-16 sm:py-20 lg:py-[120px]">
       <div className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16">
         {/* Header */}
-        <div className="mx-auto mb-16 max-w-[800px] text-center">
-          <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+        <div className="mx-auto mb-10 max-w-[800px] text-center sm:mb-16">
+          <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
             Platform
           </p>
-          <h2 className="mb-6 text-[2rem] font-semibold tracking-tight text-white lg:text-[3rem]">
+          <h2 className="mb-6 text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[3rem]">
             The OXONN Intelligence Dashboard
           </h2>
-          <p className="mx-auto max-w-xl text-[1.125rem] leading-relaxed text-[#9CA3AF]">
+          <p className="mx-auto max-w-xl text-[0.9375rem] leading-relaxed text-[#9CA3AF] sm:text-[1.125rem]">
             A unified command center for quantitative intelligence, risk monitoring, and alpha generation.
           </p>
         </div>

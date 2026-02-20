@@ -34,7 +34,7 @@ export function CTABlock({
     <section
       ref={ref}
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-[rgba(0,229,255,0.1)] bg-[#080808] px-8 py-20 text-center lg:px-16 lg:py-24',
+        'relative overflow-hidden rounded-2xl border border-[rgba(0,229,255,0.1)] bg-[#080808] px-5 py-14 text-center sm:rounded-3xl sm:px-8 sm:py-20 lg:px-16 lg:py-24',
         className
       )}
     >
@@ -89,7 +89,7 @@ export function CTABlock({
             duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
-          className="mx-auto max-w-3xl text-[2rem] font-bold tracking-tight text-white lg:text-[3.5rem] lg:leading-[1.1]"
+          className="mx-auto max-w-3xl text-[1.5rem] font-bold tracking-tight text-white sm:text-[2rem] lg:text-[3.5rem] lg:leading-[1.1]"
         >
           {title}
         </motion.h2>
@@ -104,7 +104,7 @@ export function CTABlock({
               delay: 0.15,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="mx-auto mt-5 max-w-lg text-[1.125rem] leading-[1.7] text-[#9CA3AF]"
+            className="mx-auto mt-5 max-w-lg text-[0.9375rem] leading-[1.7] text-[#9CA3AF] sm:text-[1.125rem]"
           >
             {description}
           </motion.p>

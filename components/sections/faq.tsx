@@ -90,9 +90,9 @@ function FAQItem({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between px-6 py-5 text-left"
+        className="flex w-full items-center justify-between px-4 py-4 text-left sm:px-6 sm:py-5"
       >
-        <span className="pr-8 text-[1rem] font-medium text-white">
+        <span className="pr-6 text-[0.875rem] font-medium text-white sm:pr-8 sm:text-[1rem]">
           {question}
         </span>
         <motion.div
@@ -116,7 +116,7 @@ function FAQItem({
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <p className="px-6 pb-5 pr-14 text-[0.9375rem] leading-relaxed text-[#9CA3AF]">
+            <p className="px-4 pb-4 pr-10 text-[0.8125rem] leading-relaxed text-[#9CA3AF] sm:px-6 sm:pb-5 sm:pr-14 sm:text-[0.9375rem]">
               {answer}
             </p>
           </motion.div>
@@ -131,7 +131,7 @@ export function FAQ() {
   const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   return (
-    <section className="py-[100px]">
+    <section className="py-16 sm:py-20 lg:py-[100px]">
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
@@ -141,12 +141,12 @@ export function FAQ() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mb-14 max-w-[600px] text-center"
+          className="mx-auto mb-10 max-w-[600px] text-center sm:mb-14"
         >
-          <p className="mb-4 text-[14px] font-medium uppercase tracking-[3px] text-[#00E5FF]">
+          <p className="mb-4 text-[12px] font-medium uppercase tracking-[3px] text-[#00E5FF] sm:text-[14px]">
             FAQ
           </p>
-          <h2 className="text-[2rem] font-semibold tracking-tight text-white lg:text-[2.75rem]">
+          <h2 className="text-[1.5rem] font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[2.75rem]">
             Common Questions
           </h2>
         </motion.div>
