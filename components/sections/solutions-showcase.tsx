@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { TrendingUp, Shield, Gem } from 'lucide-react';
-import { SectionReveal } from '@/components/animation/section-reveal';
 
 /* ── Helper: cubic bezier wave path (from Framer LineChart) ── */
 
@@ -287,8 +286,8 @@ const gridVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1,
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
     },
   },
 };
@@ -298,7 +297,7 @@ export function SolutionsShowcase() {
   const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   return (
-    <SectionReveal className="border-t border-[#1F1F1F] py-16 sm:py-20 lg:py-[120px]">
+    <section className="border-t border-[#1F1F1F] py-16 sm:py-20 lg:py-[120px]">
       <div
         ref={ref}
         className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16"
@@ -442,6 +441,6 @@ export function SolutionsShowcase() {
           </motion.div>
         </motion.div>
       </div>
-    </SectionReveal>
+    </section>
   );
 }

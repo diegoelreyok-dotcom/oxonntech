@@ -3,13 +3,13 @@ import type { TeamMember } from '@/types';
 export const team: TeamMember[] = [
   {
     id: 'ceo',
-    name: 'Gacien Loretz',
+    name: 'Dimitri Shelovheny',
     role: 'Chief Executive Officer',
     department: 'leadership',
     bio: 'Leading OXONN\'s vision to redefine quantitative finance through systematic innovation and institutional-grade technology.',
     image: {
-      src: '/images/team/gacien-loretz.jpg',
-      alt: 'Gacien Loretz',
+      src: '/images/team/dimitri-shelovheny.png',
+      alt: 'Dimitri Shelovheny',
       width: 800,
       height: 800,
     },

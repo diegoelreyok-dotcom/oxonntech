@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { SectionReveal } from '@/components/animation/section-reveal';
 
 /* ── Animated Mini Charts ────────────────────────────── */
 
@@ -22,14 +21,14 @@ function MiniChart({ animate }: { animate: boolean }) {
         strokeWidth="2"
         initial={{ pathLength: 0 }}
         animate={animate ? { pathLength: 1 } : undefined}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       />
       <motion.path
         d="M0,45 L20,42 L40,38 L60,40 L80,30 L100,32 L120,22 L140,25 L160,15 L180,18 L200,8 L200,60 L0,60Z"
         fill="url(#chartGrad)"
         initial={{ opacity: 0 }}
         animate={animate ? { opacity: 1 } : undefined}
-        transition={{ duration: 0.6, delay: 1.4 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
       />
     </svg>
   );
@@ -50,7 +49,7 @@ function MiniBarChart({ animate }: { animate: boolean }) {
           fill={i >= 10 ? '#00E5FF' : 'rgba(0,229,255,0.25)'}
           initial={{ scaleY: 0 }}
           animate={animate ? { scaleY: 1 } : undefined}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.6 + i * 0.04 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.2 + i * 0.03 }}
           style={{ transformOrigin: 'bottom', transformBox: 'fill-box' }}
         />
       ))}
@@ -68,7 +67,7 @@ function AlphaMiniBars({ animate }: { animate: boolean }) {
             className="rounded-sm bg-[#00E5FF]/30"
             initial={{ height: 0 }}
             animate={animate ? { height: `${(v / 100) * 40}px` } : undefined}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.7 + i * 0.04 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.25 + i * 0.03 }}
           />
         </div>
       ))}
@@ -119,7 +118,7 @@ function PortfolioChart({ animate }: { animate: boolean }) {
         fill="url(#bigChartGrad)"
         initial={{ opacity: 0 }}
         animate={animate ? { opacity: 1 } : undefined}
-        transition={{ duration: 0.8, delay: 1.6 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
       />
 
       {/* Portfolio line — animated draw with glow */}
@@ -131,7 +130,7 @@ function PortfolioChart({ animate }: { animate: boolean }) {
         filter="url(#chartGlow)"
         initial={{ pathLength: 0 }}
         animate={animate ? { pathLength: 1 } : undefined}
-        transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       />
 
       {/* Benchmark line — animated draw */}
@@ -143,14 +142,14 @@ function PortfolioChart({ animate }: { animate: boolean }) {
         strokeDasharray="4,4"
         initial={{ pathLength: 0 }}
         animate={animate ? { pathLength: 1 } : undefined}
-        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
       />
 
       {/* Live pulsing dot at end of portfolio line */}
       <motion.g
         initial={{ opacity: 0 }}
         animate={animate ? { opacity: 1 } : undefined}
-        transition={{ duration: 0.3, delay: 2.2 }}
+        transition={{ duration: 0.3, delay: 1.2 }}
       >
         {/* Outer glow pulse */}
         <motion.circle
@@ -176,7 +175,7 @@ export function DashboardPreview() {
   const isInView = useInView(chartRef, { once: true, amount: 0.2 });
 
   return (
-    <SectionReveal className="py-16 sm:py-20 lg:py-[120px]">
+    <section className="py-16 sm:py-20 lg:py-[120px]">
       <div className="mx-auto w-full max-w-[1200px] px-6 md:px-12 lg:px-16">
         {/* Header */}
         <div className="mx-auto mb-10 max-w-[800px] text-center sm:mb-16">
@@ -347,6 +346,6 @@ export function DashboardPreview() {
           </div>
         </div>
       </div>
-    </SectionReveal>
+    </section>
   );
 }

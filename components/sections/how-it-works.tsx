@@ -35,20 +35,20 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.18,
-      delayChildren: 0.15,
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
     },
   },
 };
 
 const stepVariants = {
-  hidden: { opacity: 0, y: 32, scale: 0.95 },
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      duration: 0.7,
+      duration: 0.5,
       ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
     },
   },
@@ -123,9 +123,9 @@ export function HowItWorks() {
                       initial={{ scaleX: 0 }}
                       animate={isInView ? { scaleX: 1 } : undefined}
                       transition={{
-                        duration: 0.7,
+                        duration: 0.5,
                         ease: [0.16, 1, 0.3, 1],
-                        delay: 0.6 + i * 0.22,
+                        delay: 0.3 + i * 0.12,
                       }}
                       style={{ transformOrigin: 'left' }}
                     />
@@ -139,9 +139,9 @@ export function HowItWorks() {
                           : undefined
                       }
                       transition={{
-                        duration: 0.9,
+                        duration: 0.7,
                         ease: 'easeInOut',
-                        delay: 0.6 + i * 0.22,
+                        delay: 0.3 + i * 0.12,
                       }}
                     />
                   </div>
@@ -152,19 +152,12 @@ export function HowItWorks() {
                   {/* Outer glow on hover */}
                   <div className="absolute -inset-4 rounded-2xl bg-[rgba(0,229,255,0.08)] opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
 
-                  {/* Spinning ring accent */}
-                  <motion.div
-                    className="absolute -inset-[3px] rounded-[18px]"
+                  {/* Ring accent */}
+                  <div
+                    className="absolute -inset-[3px] rounded-[18px] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                     style={{
                       background:
                         'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(0,229,255,0.3) 310deg, transparent 360deg)',
-                    }}
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 6,
-                      ease: 'linear',
-                      repeat: Infinity,
-                      delay: i * 0.8,
                     }}
                   />
 

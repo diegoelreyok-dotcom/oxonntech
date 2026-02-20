@@ -62,10 +62,10 @@ export function CTABlock({
       <motion.div
         className="pointer-events-none absolute left-0 top-0 z-[1] h-px w-1/3 bg-gradient-to-r from-transparent via-[#00E5FF]/60 to-transparent"
         initial={{ x: '-100%' }}
-        animate={isInView ? { x: ['−100%', '400%'] } : undefined}
+        animate={isInView ? { x: ['-100%', '400%'] } : { x: '-100%' }}
         transition={{
           duration: 3,
-          repeat: Infinity,
+          repeat: isInView ? Infinity : 0,
           repeatDelay: 2,
           ease: 'easeInOut',
         }}
