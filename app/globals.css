@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-cyan: #00E5FF;
+  --color-cyan-50: #E0FCFF;
+  --color-cyan-100: #B8F8FF;
+  --color-cyan-200: #76F1FF;
+  --color-cyan-300: #33EAFF;
+  --color-cyan-400: #00E5FF;
+  --color-cyan-500: #00B8CC;
+  --color-cyan-600: #008A99;
+  --color-cyan-700: #005C66;
+  --color-cyan-800: #002E33;
+  --color-cyan-900: #001719;
+  --color-muted: #9CA3AF;
+  --color-muted-foreground: #6B7280;
+  --color-surface: #0A0A0A;
+  --color-surface-light: #111111;
+  --color-border: #1F1F1F;
+  --color-border-light: #2A2A2A;
+  --color-error: #EF4444;
+  --color-success: #22C55E;
+
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  --text-display: 4.5rem;
+  --text-h1: 3rem;
+  --text-h2: 2rem;
+  --text-h3: 1.5rem;
+  --text-body-lg: 1.125rem;
+  --text-body: 1rem;
+  --text-caption: 0.875rem;
+  --text-xs: 0.75rem;
+
+  --spacing-section: 8rem;
+  --spacing-section-sm: 5rem;
+
+  --width-content: 1280px;
+  --width-narrow: 768px;
+  --width-reading: 680px;
+  --width-wide: 1440px;
+
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-fade-in: fadeIn 0.6s ease-out forwards;
+  --animate-fade-in-up: fadeInUp 0.6s ease-out forwards;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+}
+
+/*
+ * All custom styles MUST go inside @layer base so they
+ * DON'T override Tailwind utility classes.
+ * Tailwind v4 layer order: properties → theme → base → utilities
+ * Unlayered CSS beats ALL layers — that was the bug.
+ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(0, 229, 255, 0.25);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #000000;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555555;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+  }
+
+  .skip-to-content {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-cyan);
+    color: #000000;
+    font-weight: 600;
+    border-radius: 0 0 0.5rem 0.5rem;
+    transition: top 0.2s;
+  }
+
+  .skip-to-content:focus {
+    top: 0;
+  }
+}
+
+/* Reduced motion — must stay unlayered so it overrides everything */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer base {
+  /* Blog prose overrides */
+  .prose-oxonn {
+    --tw-prose-body: #D1D5DB;
+    --tw-prose-headings: #FFFFFF;
+    --tw-prose-lead: #9CA3AF;
+    --tw-prose-links: #00E5FF;
+    --tw-prose-bold: #FFFFFF;
+    --tw-prose-counters: #6B7280;
+    --tw-prose-bullets: #6B7280;
+    --tw-prose-hr: #1F1F1F;
+    --tw-prose-quotes: #D1D5DB;
+    --tw-prose-quote-borders: #00E5FF;
+    --tw-prose-captions: #6B7280;
+    --tw-prose-code: #00E5FF;
+    --tw-prose-pre-code: #D1D5DB;
+    --tw-prose-pre-bg: #0A0A0A;
+    --tw-prose-th-borders: #1F1F1F;
+    --tw-prose-td-borders: #1F1F1F;
+  }
+}
+
+/* ── Animations — inside @layer components so utilities still win ── */
+@layer components {
+  .hero-text-glow {
+    text-shadow: 0 0 40px rgba(0, 229, 255, 0.3), 0 0 80px rgba(0, 229, 255, 0.1);
+  }
+
+  /* CyclingWave 3D rings */
+  .cycling-wave-ring {
+    animation: cycleRing 6s linear infinite;
+  }
+
+  @keyframes cycleRing {
+    0% { transform: translate(-50%, -50%) rotateX(55deg) rotateY(0deg) rotateZ(0deg); }
+    100% { transform: translate(-50%, -50%) rotateX(55deg) rotateY(360deg) rotateZ(0deg); }
+  }
+}
+
+

@@ -1,0 +1,65 @@
+---
+title: "Volatility Regime Detection with Machine Learning"
+slug: "volatility-regime-detection-ml"
+excerpt: "Applying Hidden Markov Models and neural networks to identify market regime transitions before they manifest in realized volatility."
+category: "quantitative-research"
+tags: ["machine-learning", "volatility", "regime-detection", "HMM"]
+featuredImage:
+  src: "/images/insights/placeholder-blog.svg"
+  alt: "Data visualization of volatility regime transitions"
+  width: 1200
+  height: 630
+author: "cofounder"
+publishDate: "2026-02-01T00:00:00Z"
+status: "published"
+---
+
+## The Regime Problem
+
+Financial markets operate in distinct regimes — periods characterized by different statistical properties in returns, volatility, and correlation structures. The transition between regimes is often abrupt and economically significant.
+
+Traditional volatility models (GARCH, EWMA) are backward-looking by construction. They detect regime changes only after realized volatility has already shifted, leaving portfolio managers reactive rather than anticipatory.
+
+## Statistical Approaches to Regime Detection
+
+We evaluate three complementary approaches to early regime identification:
+
+### Hidden Markov Models
+
+HMMs model observable market features (returns, implied volatility, credit spreads) as emissions from a latent state process. The Baum-Welch algorithm estimates transition probabilities, and the Viterbi algorithm decodes the most likely state sequence.
+
+Our implementation uses a 3-state HMM with multivariate Gaussian emissions, calibrated on a rolling 252-day window of daily cross-asset features.
+
+### Recurrent Neural Networks
+
+LSTM networks can capture longer-range dependencies in sequential data. We train on the same feature set but allow the model to discover its own regime representation through the hidden state dynamics.
+
+The trade-off: LSTMs require more data, are less interpretable, and risk overfitting — but they can capture non-linear regime boundaries that HMMs miss.
+
+### Ensemble Methods
+
+Our production system runs both approaches simultaneously and combines their regime probabilities through a Bayesian averaging framework. When both models agree on a regime transition, confidence is high. Disagreement triggers a more conservative allocation stance.
+
+## Feature Engineering
+
+The quality of regime detection depends critically on feature selection. Our feature set includes:
+
+- Realized vs. implied volatility spread (VRP)
+- Cross-asset correlation matrix eigenvalues
+- Credit spread term structure slope
+- Options skew dynamics (25-delta risk reversal)
+- Market microstructure metrics (bid-ask spread percentiles)
+
+Each feature is z-scored against its own rolling distribution to ensure stationarity.
+
+## Practical Applications
+
+Regime detection feeds directly into three downstream systems:
+
+1. **Portfolio construction** — Allocation weights shift based on regime probabilities
+2. **Risk budgeting** — VaR limits tighten automatically during transition periods
+3. **Execution scheduling** — Trade urgency increases when regime transition probability exceeds a threshold
+
+## Ongoing Research
+
+Current work focuses on extending the framework to intraday regime detection and exploring transformer architectures for multi-timescale regime modeling.

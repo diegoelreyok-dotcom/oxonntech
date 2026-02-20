@@ -1,0 +1,54 @@
+---
+title: "Building Real-Time Hedging Infrastructure"
+slug: "real-time-hedging-infrastructure"
+excerpt: "The engineering principles behind sub-millisecond risk computation and automated hedge execution at institutional scale."
+category: "technology"
+tags: ["infrastructure", "hedging", "low-latency", "engineering"]
+featuredImage:
+  src: "/images/insights/placeholder-blog.svg"
+  alt: "Network topology visualization of hedging infrastructure"
+  width: 1200
+  height: 630
+author: "cto"
+publishDate: "2026-01-28T00:00:00Z"
+status: "published"
+---
+
+## Why Latency Matters in Risk Management
+
+In portfolio risk management, the speed of computation directly impacts the quality of hedging decisions. A risk engine that computes portfolio Greeks in 50 milliseconds is operating on stale data by the time it delivers results — particularly in volatile markets where option prices can gap multiple ticks within that window.
+
+Our target was clear from the outset: sub-millisecond full-portfolio risk recalculation. Not as a peak metric, but as a P99 guarantee.
+
+## Architecture Principles
+
+Three principles guided the system design:
+
+**Compute at the edge.** Risk calculations happen as close to market data as possible. No round-trips to centralized servers for position lookups. Positions are replicated in-memory at each compute node.
+
+**Incremental, not batch.** When a single price moves, we recompute the affected Greeks — not the entire portfolio. This reduces the computational surface by orders of magnitude.
+
+**Deterministic execution.** Garbage collection pauses, context switches, and memory allocation are the enemies of latency guarantees. The core risk engine runs on pre-allocated memory pools with zero-allocation hot paths.
+
+## The Data Pipeline
+
+Market data enters through co-located feed handlers that normalize across exchanges. Each tick is timestamped at nanosecond precision and forwarded to the risk computation layer via kernel-bypass networking.
+
+The computation layer maintains a full position snapshot in shared memory. When a tick arrives, it identifies affected positions, recomputes the relevant sensitivities, and publishes updated risk metrics — all before the next tick arrives.
+
+## Hedge Recommendation Engine
+
+Raw risk metrics are necessary but not sufficient. The hedge recommendation engine translates portfolio risk exposure into actionable hedge orders by optimizing across multiple constraints:
+
+- Minimize residual portfolio risk
+- Respect liquidity constraints on hedge instruments
+- Minimize transaction costs and market impact
+- Maintain regulatory margin requirements
+
+This is a constrained optimization problem solved at every risk update cycle.
+
+## Lessons Learned
+
+Three years of production operation have taught us that theoretical latency benchmarks are meaningless without operational resilience. We invested as much in failover, monitoring, and graceful degradation as in the core computation engine.
+
+The system that runs at sub-millisecond latency 99.97% of the time is more valuable than one that achieves microsecond latency but fails unpredictably.

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OXONN Hero — 5 Variants</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #000; color: #fff;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  /* ── Variant selector (sticky top) ── */
+  .variant-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 16px;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .variant-nav a {
+    padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    text-decoration: none; color: #9CA3AF; border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+  }
+  .variant-nav a:hover, .variant-nav a.active {
+    color: #00E5FF; border-color: rgba(0,229,255,0.4); background: rgba(0,229,255,0.08);
+  }
+  .variant-nav .nav-title {
+    font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-right: 12px;
+  }
+
+  /* ── Each variant section ── */
+  .variant-section {
+    position: relative; width: 100%; height: 100vh; overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* ── Variant label ── */
+  .variant-label {
+    position: absolute; top: 56px; left: 50%; transform: translateX(-50%); z-index: 50;
+    background: rgba(0,229,255,0.12); border: 1px solid rgba(0,229,255,0.25);
+    color: #00E5FF; padding: 5px 14px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px; backdrop-filter: blur(8px);
+    white-space: nowrap;
+  }
+
+  /* ── Shared canvas styles ── */
+  .variant-section canvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  }
+  .shader-canvas { z-index: 0; }
+  .globe-canvas { z-index: 1; }
+
+  /* ── Overlays ── */
+  .overlay-radial {
+    position: absolute; inset: 0; z-index: 3;
+  }
+  .overlay-edge {
+    position: absolute; inset: 0; z-index: 3;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, transparent 18%, transparent 82%, rgba(10,10,10,0.6) 100%);
+  }
+
+  /* ── Content ── */
+  .hero-content {
+    position: relative; z-index: 10; text-align: center;
+    max-width: 900px; margin: 0 auto; padding: 0 24px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 100%;
+  }
+  .label { font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 3px; color: #00E5FF; margin-bottom: 16px; }
+  .headline {
+    font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 24px;
+    text-shadow: 0 0 40px rgba(0,229,255,0.25), 0 0 80px rgba(0,229,255,0.08);
+  }
+  .headline .cyan { color: #00E5FF; }
+  .subtitle { font-size: 1.1rem; line-height: 1.7; color: #9CA3AF; max-width: 620px; margin: 0 auto 36px; }
+  .buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 32px; font-size: 15px; font-weight: 600; color: #fff;
+    border-radius: 12px; text-decoration: none; min-width: 200px;
+    overflow: visible; z-index: 0; transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn:hover { transform: scale(1.02); box-shadow: 0 0 25px rgba(0,229,255,0.15); }
+  .btn .bg { position: absolute; inset: -1px; border-radius: 13px; z-index: -2; pointer-events: none; }
+  .btn .gw { position: absolute; inset: -4px; border-radius: 16px; opacity: 0.35; filter: blur(4px); z-index: -4; pointer-events: none; }
+  .btn .fl { position: absolute; inset: 0.5px; border-radius: 11.5px; background: #000; z-index: -1; pointer-events: none; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px; padding: 8px 20px 8px 12px; font-size: 14px;
+    color: #ccc; margin-top: 28px; backdrop-filter: blur(8px);
+  }
+  .badge-avatars { display: flex; }
+  .badge-av {
+    width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a;
+    border: 2px solid #000; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: #888;
+  }
+  .badge-av + .badge-av { margin-left: -6px; }
+  .badge strong { color: #fff; }
+
+  /* Cycling wave */
+  .cw-container {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 720px; height: 720px; z-index: 2; pointer-events: none; perspective: 800px;
+  }
+  .cw-ring {
+    position: absolute; top: 50%; left: 50%; border-radius: 50%;
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%) rotateX(55deg) rotateZ(0deg);
+    animation: cwSpin 6s linear infinite;
+  }
+  @keyframes cwSpin {
+    0% { transform: translate(-50%, -50%) rotateX(55deg) rotateY(0deg); }
+    100% { transform: translate(-50%, -50%) rotateX(55deg) rotateY(360deg); }
+  }
+
+  /* Navbar in each variant */
+  .mock-nav {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 40px;
+  }
+  .mock-nav .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.05em; }
+  .mock-nav .links { display: flex; gap: 28px; list-style: none; }
+  .mock-nav .links a { font-size: 14px; color: #9CA3AF; text-decoration: none; }
+  .mock-nav .contact-btn {
+    position: relative; z-index: 0; display: inline-flex; align-items: center;
+    font-size: 14px; font-weight: 600; color: #fff; border: none;
+    border-radius: 10px; padding: 8px 20px; text-decoration: none; overflow: visible;
+  }
+  .mock-nav .contact-btn .bg { position: absolute; inset: -1px; border-radius: 11px; z-index: -2; pointer-events: none; }
+  .mock-nav .contact-btn .gw { position: absolute; inset: -3px; border-radius: 13px; opacity: 0.35; filter: blur(3px); z-index: -4; pointer-events: none; }
+  .mock-nav .contact-btn .fl { position: absolute; inset: 0.5px; border-radius: 9.5px; background: rgba(0,0,0,0.85); z-index: -1; pointer-events: none; }
+
+  .scroll-hint {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #555;
+  }
+</style>
+</head>
+<body>
+
+<!-- Variant navigation -->
+<nav class="variant-nav">
+  <span class="nav-title">Variants:</span>
+  <a href="#v1">A — Globe Only</a>
+  <a href="#v2">B — Globe + Shader</a>
+  <a href="#v3">C — White Globe + Shader</a>
+  <a href="#v4">D — Minimal White Globe</a>
+  <a href="#v5">E — Shader Only (Current)</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT A — Cyan Globe, Pure Black Background
+     Concepto: Tecnología pura, geométrica, impactante
+     ═══════════════════════════════════════════ -->
+<section class="variant-section" id="v1">
+  <div class="variant-label">A — CYAN GLOBE · BLACK BG · HIGH CONTRAST</div>
+  <canvas class="globe-canvas" id="globe-a"></canvas>
+  <div class="cw-container" id="cw-a"></div>
+  <div class="overlay-radial" style="background: radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.82) 78%);"></div>
+  <div class="overlay-edge"></div>
+  <div class="mock-nav">
+    <div class="logo">OXONN</div>
+    <ul class="links"><li><a href="#">About</a></li><li><a href="#">Solutions</a></li><li><a href="#">Technology</a></li><li><a href="#">Insights</a></li></ul>
+    <a href="#" class="contact-btn" data-anim="1"><span class="gw" id="cb-a-gw"></span><span class="bg" id="cb-a-bg"></span><span class="fl"></span>Contact</a>
+  </div>
+  <div class="hero-content">
+    <p class="label">Quantitative Intelligence</p>
+    <h1 class="headline">Redefining the Edge in<br/><span class="cyan">Quantitative Finance</span></h1>
+    <p class="subtitle">OXONN Technologies delivers systematic alpha generation, advanced risk management, and bespoke quantitative solutions for institutional and select investors.</p>
+    <div class="buttons">
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b1a-gw"></span><span class="bg" id="b1a-bg"></span><span class="fl"></span>Explore Solutions</a>
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b2a-gw"></span><span class="bg" id="b2a-bg"></span><span class="fl"></span>Get in Touch</a>
+    </div>
+    <div class="badge"><div class="badge-avatars"><div class="badge-av">A</div><div class="badge-av">M</div><div class="badge-av">K</div></div><span style="color:#00E5FF">✓</span>&nbsp;Trusted by <strong>&nbsp;50+</strong>&nbsp;institutional clients</div>
+  </div>
+  <div class="scroll-hint">↓ Scroll for more variants</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT B — Cyan Globe + Shader Gradient
+     Concepto: Energía orgánica + estructura geométrica
+     ═══════════════════════════════════════════ -->
+<section class="variant-section" id="v2">
+  <div class="variant-label">B — CYAN GLOBE + SHADER GRADIENT · ENERGY</div>
+  <canvas class="shader-canvas" id="shader-b"></canvas>
+  <canvas class="globe-canvas" id="globe-b"></canvas>
+  <div class="cw-container" id="cw-b"></div>
+  <div class="overlay-radial" style="background: radial-gradient(ellipse at center, transparent 18%, rgba(0,0,0,0.35) 48%, rgba(0,0,0,0.78) 76%);"></div>
+  <div class="overlay-edge"></div>
+  <div class="mock-nav">
+    <div class="logo">OXONN</div>
+    <ul class="links"><li><a href="#">About</a></li><li><a href="#">Solutions</a></li><li><a href="#">Technology</a></li><li><a href="#">Insights</a></li></ul>
+    <a href="#" class="contact-btn" data-anim="1"><span class="gw" id="cb-b-gw"></span><span class="bg" id="cb-b-bg"></span><span class="fl"></span>Contact</a>
+  </div>
+  <div class="hero-content">
+    <p class="label">Quantitative Intelligence</p>
+    <h1 class="headline">Redefining the Edge in<br/><span class="cyan">Quantitative Finance</span></h1>
+    <p class="subtitle">OXONN Technologies delivers systematic alpha generation, advanced risk management, and bespoke quantitative solutions for institutional and select investors.</p>
+    <div class="buttons">
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b1b-gw"></span><span class="bg" id="b1b-bg"></span><span class="fl"></span>Explore Solutions</a>
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b2b-gw"></span><span class="bg" id="b2b-bg"></span><span class="fl"></span>Get in Touch</a>
+    </div>
+    <div class="badge"><div class="badge-avatars"><div class="badge-av">A</div><div class="badge-av">M</div><div class="badge-av">K</div></div><span style="color:#00E5FF">✓</span>&nbsp;Trusted by <strong>&nbsp;50+</strong>&nbsp;institutional clients</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT C — White Globe + Shader Gradient
+     Concepto: Elegancia premium, oxonn-tech.com feel
+     ═══════════════════════════════════════════ -->
+<section class="variant-section" id="v3">
+  <div class="variant-label">C — WHITE GLOBE + SHADER · ELEGANT PREMIUM</div>
+  <canvas class="shader-canvas" id="shader-c"></canvas>
+  <canvas class="globe-canvas" id="globe-c"></canvas>
+  <div class="cw-container" id="cw-c"></div>
+  <div class="overlay-radial" style="background: radial-gradient(ellipse at center, transparent 18%, rgba(0,0,0,0.35) 48%, rgba(0,0,0,0.78) 76%);"></div>
+  <div class="overlay-edge"></div>
+  <div class="mock-nav">
+    <div class="logo">OXONN</div>
+    <ul class="links"><li><a href="#">About</a></li><li><a href="#">Solutions</a></li><li><a href="#">Technology</a></li><li><a href="#">Insights</a></li></ul>
+    <a href="#" class="contact-btn" data-anim="1"><span class="gw" id="cb-c-gw"></span><span class="bg" id="cb-c-bg"></span><span class="fl"></span>Contact</a>
+  </div>
+  <div class="hero-content">
+    <p class="label">Quantitative Intelligence</p>
+    <h1 class="headline">Redefining the Edge in<br/><span class="cyan">Quantitative Finance</span></h1>
+    <p class="subtitle">OXONN Technologies delivers systematic alpha generation, advanced risk management, and bespoke quantitative solutions for institutional and select investors.</p>
+    <div class="buttons">
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b1c-gw"></span><span class="bg" id="b1c-bg"></span><span class="fl"></span>Explore Solutions</a>
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b2c-gw"></span><span class="bg" id="b2c-bg"></span><span class="fl"></span>Get in Touch</a>
+    </div>
+    <div class="badge"><div class="badge-avatars"><div class="badge-av">A</div><div class="badge-av">M</div><div class="badge-av">K</div></div><span style="color:#00E5FF">✓</span>&nbsp;Trusted by <strong>&nbsp;50+</strong>&nbsp;institutional clients</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT D — Minimal White Globe, No Shader
+     Concepto: Ultra-clean, Apple-like minimal
+     ═══════════════════════════════════════════ -->
+<section class="variant-section" id="v4">
+  <div class="variant-label">D — MINIMAL WHITE GLOBE · ULTRA CLEAN</div>
+  <canvas class="globe-canvas" id="globe-d"></canvas>
+  <div class="overlay-radial" style="background: radial-gradient(ellipse at center, transparent 22%, rgba(0,0,0,0.3) 52%, rgba(0,0,0,0.85) 80%);"></div>
+  <div class="overlay-edge"></div>
+  <div class="mock-nav">
+    <div class="logo">OXONN</div>
+    <ul class="links"><li><a href="#">About</a></li><li><a href="#">Solutions</a></li><li><a href="#">Technology</a></li><li><a href="#">Insights</a></li></ul>
+    <a href="#" class="contact-btn" data-anim="1"><span class="gw" id="cb-d-gw"></span><span class="bg" id="cb-d-bg"></span><span class="fl"></span>Contact</a>
+  </div>
+  <div class="hero-content">
+    <p class="label">Quantitative Intelligence</p>
+    <h1 class="headline">Redefining the Edge in<br/><span class="cyan">Quantitative Finance</span></h1>
+    <p class="subtitle">OXONN Technologies delivers systematic alpha generation, advanced risk management, and bespoke quantitative solutions for institutional and select investors.</p>
+    <div class="buttons">
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b1d-gw"></span><span class="bg" id="b1d-bg"></span><span class="fl"></span>Explore Solutions</a>
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b2d-gw"></span><span class="bg" id="b2d-bg"></span><span class="fl"></span>Get in Touch</a>
+    </div>
+    <div class="badge"><div class="badge-avatars"><div class="badge-av">A</div><div class="badge-av">M</div><div class="badge-av">K</div></div><span style="color:#00E5FF">✓</span>&nbsp;Trusted by <strong>&nbsp;50+</strong>&nbsp;institutional clients</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     VARIANT E — Shader Only (current site)
+     Concepto: Referencia del estado actual
+     ═══════════════════════════════════════════ -->
+<section class="variant-section" id="v5">
+  <div class="variant-label">E — SHADER ONLY · CURRENT SITE (REFERENCE)</div>
+  <canvas class="shader-canvas" id="shader-e"></canvas>
+  <div class="overlay-radial" style="background: radial-gradient(ellipse at center, transparent 30%, rgba(10,10,10,0.5) 55%, rgba(10,10,10,0.9) 80%);"></div>
+  <div class="overlay-edge"></div>
+  <div class="mock-nav">
+    <div class="logo" style="letter-spacing: 0.2em; font-size: 18px;">OXONN</div>
+    <ul class="links"><li><a href="#">About</a></li><li><a href="#">Solutions</a></li><li><a href="#">Technology</a></li><li><a href="#">Insights</a></li></ul>
+    <a href="#" class="contact-btn" data-anim="1"><span class="gw" id="cb-e-gw"></span><span class="bg" id="cb-e-bg"></span><span class="fl"></span>Contact</a>
+  </div>
+  <div class="hero-content">
+    <p class="label">Quantitative Intelligence</p>
+    <h1 class="headline">Redefining the Edge in<br/><span class="cyan">Quantitative Finance</span></h1>
+    <p class="subtitle">OXONN Technologies delivers systematic alpha generation, advanced risk management, and bespoke quantitative solutions for institutional and select investors.</p>
+    <div class="buttons">
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b1e-gw"></span><span class="bg" id="b1e-bg"></span><span class="fl"></span>Explore Solutions</a>
+      <a href="#" class="btn" data-anim="1"><span class="gw" id="b2e-gw"></span><span class="bg" id="b2e-bg"></span><span class="fl"></span>Get in Touch</a>
+    </div>
+    <div class="badge"><div class="badge-avatars"><div class="badge-av">A</div><div class="badge-av">M</div><div class="badge-av">K</div></div><span style="color:#00E5FF">✓</span>&nbsp;Trusted by <strong>&nbsp;50+</strong>&nbsp;institutional clients</div>
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════
+// SHADER GRADIENT FACTORY
+// ══════════════════════════════════════
+function createShader(canvasId, brightness) {
+  const c = document.getElementById(canvasId);
+  const gl = c.getContext('webgl2', { alpha: false, premultipliedAlpha: false });
+  if (!gl) return;
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  const section = c.closest('.variant-section');
+
+  function resize() {
+    const rect = section.getBoundingClientRect();
+    c.width = rect.width * dpr; c.height = rect.height * dpr;
+    c.style.width = rect.width + 'px'; c.style.height = rect.height + 'px';
+    gl.viewport(0, 0, c.width, c.height);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  const vs = `#version 300 es
+  in vec2 a_pos; void main() { gl_Position = vec4(a_pos, 0, 1); }`;
+
+  const fs = `#version 300 es
+  precision highp float;
+  uniform float u_time, u_bright; uniform vec2 u_res; out vec4 o;
+  vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+  vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+  vec4 perm(vec4 x){return mod289(((x*34.)+1.)*x);}
+  float noise(vec3 p){vec3 a=floor(p);vec3 d=p-a;d=d*d*(3.-2.*d);vec4 b=a.xxyy+vec4(0,1,0,1);vec4 k1=perm(b.xyxy);vec4 k2=perm(k1.xyxy+b.zzww);vec4 c2=k2+a.zzzz;vec4 k3=perm(c2);vec4 k4=perm(c2+1.);vec4 o1=fract(k3*(1./41.));vec4 o2=fract(k4*(1./41.));vec4 o3=o2*d.z+o1*(1.-d.z);vec2 o4=o3.yw*d.x+o3.xz*(1.-d.x);return o4.y*d.y+o4.x*(1.-d.y);}
+  void main(){
+    vec2 uv=gl_FragCoord.xy/u_res; float t=u_time*0.025;
+    float n1=noise(vec3(uv*2.,t*0.5))*4.; vec2 duv=uv+vec2(n1*0.02,n1*0.015);
+    vec2 ctr=vec2(0.5); vec2 tc=duv-ctr; float dist=length(tc); float ang=atan(tc.y,tc.x);
+    for(int i=0;i<4;i++){ang+=sin(dist*6.-t*2.)*0.65;duv=ctr+dist*vec2(cos(ang),sin(ang));}
+    float shape=smoothstep(0.,1.,duv.y);
+    vec3 c1=vec3(0.02),c2=vec3(0.,0.898,1.),c3=vec3(0.02);
+    float bl=shape*noise(vec3(duv*3.,t));
+    vec3 col=mix(c1,mix(c2,c3,smoothstep(0.3,0.7,bl)),smoothstep(0.1,0.5,bl));
+    col*=u_bright; o=vec4(col,1.);
+  }`;
+
+  function compile(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+  const prog=gl.createProgram();
+  gl.attachShader(prog,compile(gl.VERTEX_SHADER,vs));
+  gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const aPos=gl.getAttribLocation(prog,'a_pos');
+  gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos,2,gl.FLOAT,false,0,0);
+  const uTime=gl.getUniformLocation(prog,'u_time');
+  const uRes=gl.getUniformLocation(prog,'u_res');
+  const uBright=gl.getUniformLocation(prog,'u_bright');
+
+  function draw(t){
+    requestAnimationFrame(draw);
+    gl.uniform1f(uTime,t*0.001); gl.uniform2f(uRes,c.width,c.height);
+    gl.uniform1f(uBright,brightness);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+  }
+  requestAnimationFrame(draw);
+}
+
+// ══════════════════════════════════════
+// GLOBE FACTORY
+// ══════════════════════════════════════
+function createGlobe(canvasId, wireColor, wireOpacity, dotColor, dotOpacity, particleColor) {
+  const canvas = document.getElementById(canvasId);
+  const section = canvas.closest('.variant-section');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  function resizeGlobe() {
+    const r = section.getBoundingClientRect();
+    renderer.setSize(r.width, r.height);
+    cam.aspect = r.width / r.height;
+    cam.updateProjectionMatrix();
+  }
+
+  const sc = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  cam.position.z = 5;
+  resizeGlobe(); window.addEventListener('resize', resizeGlobe);
+
+  // Inner wireframe
+  const sg = new THREE.IcosahedronGeometry(2.2, 3);
+  const wf = new THREE.WireframeGeometry(sg);
+  const wm = new THREE.LineBasicMaterial({ color: wireColor, opacity: wireOpacity, transparent: true });
+  const wl = new THREE.LineSegments(wf, wm); sc.add(wl);
+
+  // Dots
+  const dg = new THREE.BufferGeometry();
+  const pos = sg.attributes.position;
+  const dp = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) { dp[i*3]=pos.getX(i); dp[i*3+1]=pos.getY(i); dp[i*3+2]=pos.getZ(i); }
+  dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+  const dm = new THREE.PointsMaterial({ color: dotColor, size: 0.03, transparent: true, opacity: dotOpacity });
+  const dots = new THREE.Points(dg, dm); sc.add(dots);
+
+  // Particles
+  const pc = 200; const pg = new THREE.BufferGeometry();
+  const pp = new Float32Array(pc * 3); const pv = [];
+  for (let i = 0; i < pc; i++) {
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1), r=2.3+Math.random()*0.9;
+    pp[i*3]=r*Math.sin(ph)*Math.cos(th); pp[i*3+1]=r*Math.sin(ph)*Math.sin(th); pp[i*3+2]=r*Math.cos(ph);
+    pv.push({x:(Math.random()-0.5)*0.002, y:(Math.random()-0.5)*0.002, z:(Math.random()-0.5)*0.002});
+  }
+  pg.setAttribute('position', new THREE.BufferAttribute(pp, 3));
+  const pm = new THREE.PointsMaterial({ color: particleColor, size: 0.025, transparent: true, opacity: 0.7 });
+  const particles = new THREE.Points(pg, pm); sc.add(particles);
+
+  // Outer wireframe
+  const og = new THREE.IcosahedronGeometry(2.45, 2);
+  const ow = new THREE.WireframeGeometry(og);
+  const om = new THREE.LineBasicMaterial({ color: wireColor, opacity: wireOpacity * 0.3, transparent: true });
+  const ol = new THREE.LineSegments(ow, om); sc.add(ol);
+
+  function anim() {
+    requestAnimationFrame(anim);
+    wl.rotation.y+=0.002; wl.rotation.x+=0.0005;
+    dots.rotation.y+=0.002; dots.rotation.x+=0.0005;
+    ol.rotation.y-=0.001; ol.rotation.x+=0.0003;
+    const pa = particles.geometry.attributes.position.array;
+    for(let i=0;i<pc;i++){
+      pa[i*3]+=pv[i].x; pa[i*3+1]+=pv[i].y; pa[i*3+2]+=pv[i].z;
+      const d=Math.sqrt(pa[i*3]**2+pa[i*3+1]**2+pa[i*3+2]**2);
+      if(d>3.5||d<2.1){pv[i].x*=-1;pv[i].y*=-1;pv[i].z*=-1;}
+    }
+    particles.geometry.attributes.position.needsUpdate=true;
+    particles.rotation.y+=0.001;
+    renderer.render(sc, cam);
+  }
+  anim();
+}
+
+// ══════════════════════════════════════
+// CYCLING WAVE FACTORY
+// ══════════════════════════════════════
+function createWaves(containerId, color) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  for (let i = 0; i < 8; i++) {
+    const r = document.createElement('div');
+    r.className = 'cw-ring';
+    const sz = 250 + i * 50;
+    r.style.width = sz+'px'; r.style.height = sz+'px';
+    r.style.border = `1.5px solid ${color}`;
+    r.style.animationDelay = (i*0.3)+'s';
+    r.style.opacity = 0.12 - (i*0.01);
+    el.appendChild(r);
+  }
+}
+
+// ══════════════════════════════════════
+// ANIMATED BUTTON FACTORY
+// ══════════════════════════════════════
+(function() {
+  const makeG = (a) => `conic-gradient(from ${a}deg, transparent 0deg, transparent 200deg, rgba(0,229,255,0.4) 240deg, rgba(0,229,255,0.9) 280deg, rgba(0,229,255,0.4) 320deg, transparent 360deg)`;
+  let start = null;
+  const btns = document.querySelectorAll('[data-anim]');
+  function tick(ts) {
+    if (!start) start = ts;
+    const angle = (((ts - start) * 60) / 1000) % 360;
+    const g = makeG(angle);
+    btns.forEach(btn => {
+      const bg = btn.querySelector('.bg');
+      const gw = btn.querySelector('.gw');
+      if (bg) bg.style.background = g;
+      if (gw) gw.style.background = g;
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+// ══════════════════════════════════════
+// INITIALIZE ALL VARIANTS
+// ══════════════════════════════════════
+
+// A — Cyan globe, black bg
+createGlobe('globe-a', 0x00E5FF, 0.28, 0x00E5FF, 0.6, 0x00E5FF);
+createWaves('cw-a', 'rgba(0,229,255,0.08)');
+
+// B — Cyan globe + shader
+createShader('shader-b', 0.6);
+createGlobe('globe-b', 0x00E5FF, 0.25, 0x00E5FF, 0.6, 0x00E5FF);
+createWaves('cw-b', 'rgba(0,229,255,0.08)');
+
+// C — White globe + shader
+createShader('shader-c', 0.55);
+createGlobe('globe-c', 0xFFFFFF, 0.18, 0xFFFFFF, 0.5, 0x00E5FF);
+createWaves('cw-c', 'rgba(255,255,255,0.05)');
+
+// D — Minimal white globe, no shader
+createGlobe('globe-d', 0xFFFFFF, 0.12, 0xFFFFFF, 0.35, 0x00E5FF);
+// No waves for D — ultra minimal
+
+// E — Shader only (current reference)
+createShader('shader-e', 0.8);
+
+// ── Scroll spy for nav ──
+const navLinks = document.querySelectorAll('.variant-nav a');
+const sections = document.querySelectorAll('.variant-section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = e.target.id;
+      const link = document.querySelector(`.variant-nav a[href="#${id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

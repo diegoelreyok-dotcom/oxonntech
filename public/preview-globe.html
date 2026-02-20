@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OXONN Hero Preview — Wireframe Globe</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Globe canvas ── */
+  #globe-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  /* ── Cycling wave rings ── */
+  .cycling-wave-container {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 720px; height: 720px;
+    z-index: 1;
+    pointer-events: none;
+    perspective: 800px;
+  }
+  .wave-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    border: 1.5px solid rgba(0, 229, 255, 0.08);
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%) rotateX(55deg) rotateZ(0deg);
+    animation: cycleRing 6s linear infinite;
+  }
+  @keyframes cycleRing {
+    0% { transform: translate(-50%, -50%) rotateX(55deg) rotateY(0deg) rotateZ(0deg); }
+    100% { transform: translate(-50%, -50%) rotateX(55deg) rotateY(360deg) rotateZ(0deg); }
+  }
+
+  /* ── Radial overlay for text readability ── */
+  .radial-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.82) 78%);
+  }
+
+  /* ── Top/bottom fade ── */
+  .edge-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.6) 0%, transparent 20%, transparent 80%, rgba(10,10,10,0.7) 100%);
+  }
+
+  /* ── Hero section ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 900px;
+    padding: 0 24px;
+  }
+
+  /* Social proof badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    padding: 8px 20px 8px 12px;
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 28px;
+    backdrop-filter: blur(8px);
+  }
+  .badge-avatars {
+    display: flex;
+    gap: -4px;
+  }
+  .badge-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    border: 2px solid #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: #888;
+  }
+  .badge-avatar + .badge-avatar { margin-left: -6px; }
+  .badge-check {
+    color: #00E5FF;
+    font-size: 16px;
+  }
+  .badge strong { color: #fff; }
+
+  /* Label */
+  .label {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #00E5FF;
+    margin-bottom: 16px;
+  }
+
+  /* Headline */
+  .headline {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    text-shadow: 0 0 40px rgba(0,229,255,0.3), 0 0 80px rgba(0,229,255,0.1);
+  }
+  .headline .cyan {
+    color: #00E5FF;
+  }
+
+  /* Subtitle */
+  .subtitle {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #9CA3AF;
+    max-width: 620px;
+    margin: 0 auto 40px;
+  }
+
+  /* Buttons */
+  .buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 12px;
+    text-decoration: none;
+    min-width: 200px;
+    overflow: visible;
+    z-index: 0;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(0,229,255,0.15), 0 0 50px rgba(0,229,255,0.06);
+  }
+  .btn .btn-glow {
+    position: absolute;
+    inset: -4px;
+    border-radius: 16px;
+    opacity: 0.4;
+    filter: blur(4px);
+    z-index: -4;
+    pointer-events: none;
+  }
+  .btn .btn-border {
+    position: absolute;
+    inset: -1px;
+    border-radius: 13px;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .btn .btn-fill {
+    position: absolute;
+    inset: 0.5px;
+    border-radius: 11.5px;
+    background: #000;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+  }
+  .scroll-indicator span {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #9CA3AF;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, #9CA3AF, transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* Navbar */
+  .navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .navbar-logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: #fff;
+  }
+  .navbar-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .navbar-links a {
+    font-size: 14px;
+    color: #9CA3AF;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .navbar-links a:hover { color: #fff; }
+  .navbar-contact {
+    position: relative;
+    z-index: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 20px;
+    text-decoration: none;
+    overflow: visible;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .navbar-contact:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(0,229,255,0.12), 0 0 40px rgba(0,229,255,0.05);
+  }
+  .navbar-contact .nav-btn-glow {
+    position: absolute;
+    inset: -3px;
+    border-radius: 13px;
+    opacity: 0.35;
+    filter: blur(3px);
+    z-index: -4;
+    pointer-events: none;
+  }
+  .navbar-contact .nav-btn-border {
+    position: absolute;
+    inset: -1px;
+    border-radius: 11px;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .navbar-contact .nav-btn-fill {
+    position: absolute;
+    inset: 0.5px;
+    border-radius: 9.5px;
+    background: rgba(0,0,0,0.85);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* ── Comparison label ── */
+  .preview-label {
+    position: fixed;
+    top: 12px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(0,229,255,0.15);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: #00E5FF;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    backdrop-filter: blur(8px);
+  }
+</style>
+</head>
+<body>
+
+<!-- Preview label -->
+<div class="preview-label">PREVIEW — WIREFRAME GLOBE HERO</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-logo">OXONN</div>
+  <ul class="navbar-links">
+    <li><a href="#">About</a></li>
+    <li><a href="#">Solutions</a></li>
+    <li><a href="#">Technology</a></li>
+    <li><a href="#">Insights</a></li>
+  </ul>
+  <a href="#" class="navbar-contact" id="nav-contact">
+    <span class="nav-btn-glow" id="nav-contact-glow"></span>
+    <span class="nav-btn-border" id="nav-contact-border"></span>
+    <span class="nav-btn-fill"></span>
+    Contact
+  </a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <!-- Three.js Globe -->
+  <canvas id="globe-canvas"></canvas>
+
+  <!-- CyclingWave rings (decorative) -->
+  <div class="cycling-wave-container" id="cycling-wave"></div>
+
+  <!-- Overlays for readability -->
+  <div class="radial-overlay"></div>
+  <div class="edge-overlay"></div>
+
+  <!-- Content -->
+  <div class="hero-content">
+    <p class="label">Quantitative Intelligence</p>
+
+    <h1 class="headline">
+      Redefining the Edge in<br/>
+      <span class="cyan">Quantitative Finance</span>
+    </h1>
+
+    <p class="subtitle">
+      OXONN Technologies delivers systematic alpha generation, advanced
+      risk management, and bespoke quantitative solutions for institutional
+      and select investors.
+    </p>
+
+    <div class="buttons">
+      <a href="#" class="btn" id="btn1">
+        <span class="btn-glow" id="btn1-glow"></span>
+        <span class="btn-border" id="btn1-border"></span>
+        <span class="btn-fill"></span>
+        Explore Solutions
+      </a>
+      <a href="#" class="btn" id="btn2">
+        <span class="btn-glow" id="btn2-glow"></span>
+        <span class="btn-border" id="btn2-border"></span>
+        <span class="btn-fill"></span>
+        Get in Touch
+      </a>
+    </div>
+
+    <!-- Social proof badge — moved below CTAs -->
+    <div class="badge" style="margin-top: 32px; margin-bottom: 0;">
+      <div class="badge-avatars">
+        <div class="badge-avatar">A</div>
+        <div class="badge-avatar">M</div>
+        <div class="badge-avatar">K</div>
+      </div>
+      <span class="badge-check">✓</span>
+      Trusted by <strong>&nbsp;50+</strong>&nbsp;institutional clients
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════
+// 1. WIREFRAME GLOBE (Three.js)
+// ══════════════════════════════════════
+const canvas = document.getElementById('globe-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+// Sphere wireframe
+const sphereGeo = new THREE.IcosahedronGeometry(2.2, 3);
+const wireframe = new THREE.WireframeGeometry(sphereGeo);
+const wireMat = new THREE.LineBasicMaterial({
+  color: 0x00E5FF,
+  opacity: 0.28,
+  transparent: true,
+});
+const wireLines = new THREE.LineSegments(wireframe, wireMat);
+scene.add(wireLines);
+
+// Dots at vertices
+const dotGeo = new THREE.BufferGeometry();
+const positions = sphereGeo.attributes.position;
+const dotPositions = new Float32Array(positions.count * 3);
+for (let i = 0; i < positions.count; i++) {
+  dotPositions[i * 3] = positions.getX(i);
+  dotPositions[i * 3 + 1] = positions.getY(i);
+  dotPositions[i * 3 + 2] = positions.getZ(i);
+}
+dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPositions, 3));
+const dotMat = new THREE.PointsMaterial({
+  color: 0x00E5FF,
+  size: 0.03,
+  transparent: true,
+  opacity: 0.6,
+});
+const dots = new THREE.Points(dotGeo, dotMat);
+scene.add(dots);
+
+// Floating particles
+const particleCount = 200;
+const particleGeo = new THREE.BufferGeometry();
+const pPositions = new Float32Array(particleCount * 3);
+const pVelocities = [];
+for (let i = 0; i < particleCount; i++) {
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  const r = 2.3 + Math.random() * 0.9;
+  pPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+  pPositions[i * 3 + 2] = r * Math.cos(phi);
+  pVelocities.push({
+    x: (Math.random() - 0.5) * 0.002,
+    y: (Math.random() - 0.5) * 0.002,
+    z: (Math.random() - 0.5) * 0.002,
+  });
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+const particleMat = new THREE.PointsMaterial({
+  color: 0x00E5FF,
+  size: 0.025,
+  transparent: true,
+  opacity: 0.7,
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+// Second wireframe layer (outer, more transparent)
+const outerGeo = new THREE.IcosahedronGeometry(2.45, 2);
+const outerWire = new THREE.WireframeGeometry(outerGeo);
+const outerMat = new THREE.LineBasicMaterial({
+  color: 0x00E5FF,
+  opacity: 0.09,
+  transparent: true,
+});
+const outerLines = new THREE.LineSegments(outerWire, outerMat);
+scene.add(outerLines);
+
+// Animation loop
+let rafId;
+function animate() {
+  rafId = requestAnimationFrame(animate);
+
+  wireLines.rotation.y += 0.002;
+  wireLines.rotation.x += 0.0005;
+  dots.rotation.y += 0.002;
+  dots.rotation.x += 0.0005;
+  outerLines.rotation.y -= 0.001;
+  outerLines.rotation.x += 0.0003;
+
+  // Animate particles
+  const pPos = particles.geometry.attributes.position.array;
+  for (let i = 0; i < particleCount; i++) {
+    pPos[i * 3] += pVelocities[i].x;
+    pPos[i * 3 + 1] += pVelocities[i].y;
+    pPos[i * 3 + 2] += pVelocities[i].z;
+    const dist = Math.sqrt(pPos[i*3]**2 + pPos[i*3+1]**2 + pPos[i*3+2]**2);
+    if (dist > 3.5 || dist < 2.1) {
+      pVelocities[i].x *= -1;
+      pVelocities[i].y *= -1;
+      pVelocities[i].z *= -1;
+    }
+  }
+  particles.geometry.attributes.position.needsUpdate = true;
+  particles.rotation.y += 0.001;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// Pause when tab not visible
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    cancelAnimationFrame(rafId);
+  } else {
+    animate();
+  }
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ══════════════════════════════════════
+// 2. CYCLING WAVE RINGS
+// ══════════════════════════════════════
+const waveContainer = document.getElementById('cycling-wave');
+const ringCount = 8;
+for (let i = 0; i < ringCount; i++) {
+  const ring = document.createElement('div');
+  ring.className = 'wave-ring';
+  const size = 250 + i * 50;
+  ring.style.width = size + 'px';
+  ring.style.height = size + 'px';
+  ring.style.animationDelay = (i * 0.3) + 's';
+  ring.style.opacity = 0.15 - (i * 0.012);
+  waveContainer.appendChild(ring);
+}
+
+// ══════════════════════════════════════
+// 3. ANIMATED BORDER BUTTONS
+// ══════════════════════════════════════
+function animateButton(btnId) {
+  const glow = document.getElementById(btnId + '-glow');
+  const border = document.getElementById(btnId + '-border');
+  if (!border) return;
+  const makeGradient = (angle) =>
+    `conic-gradient(from ${angle}deg, transparent 0deg, transparent 200deg, rgba(0,229,255,0.4) 240deg, rgba(0,229,255,0.9) 280deg, rgba(0,229,255,0.4) 320deg, transparent 360deg)`;
+  let start = null;
+  const speed = 60;
+  function tick(ts) {
+    if (!start) start = ts;
+    const angle = (((ts - start) * speed) / 1000) % 360;
+    const g = makeGradient(angle);
+    border.style.background = g;
+    if (glow) glow.style.background = g;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+animateButton('btn1');
+animateButton('btn2');
+animateButton('nav-contact');
+</script>
+</body>
+</html>
